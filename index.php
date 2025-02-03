@@ -9,6 +9,10 @@
 
 <?php
 
+
+
+
+
 $title = $_POST['title'] ?? null;
 $text = $_POST['text'] ?? null;
 $date = date('Y-m-d H:i:s');
