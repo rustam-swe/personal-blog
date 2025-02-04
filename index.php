@@ -1,32 +1,29 @@
-<html>
-<h1>Personal Blog</h1>
-<form action="index.php" method="post">
-  <input type="text" name="title" placeholder="Title"><br>
-  <textarea name="text"></textarea><br>
-<button type="submit">Submit</button>
-</form>
-</html>
-
 <?php
+include 'db.php';
 
-$title = $_POST['title'] ?? null;
-$text = $_POST['text'] ?? null;
-$date = date('Y-m-d H:i:s');
+$stmt = $db->query("SELECT * FROM posts ORDER BY created_at DESC");
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 
-try {
-  $db = new PDO("mysql:host=localhost;dbname=personal_blog", 'root', '1234');
-  $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  echo "Connected successfully";
-} catch(PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Blog</title>
+</head>
+<body>
+    <h1>Personal Blog</h1>
+    <a href="create.php">Add new post</a>
 
-$stmt = $db->prepare("INSERT INTO posts(title, text, created_at) VALUES(:title, :text, :created_at)");
-$stmt->execute(['title'=>$title, 'text'=>$text, 'created_at' => $date]);
-
-
-
-
-
-
-
+    <?php foreach ($posts as $post): ?>
+        <h2>
+            <a href="post.php?id=<?= $post['id'] ?>">
+                <?= htmlspecialchars($post['title']) ?>
+            </a>
+        </h2>
+        <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
+        <a href="edit.php?id=<?= $post['id'] ?>">edit</a>
+        <a href="delete.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')">delete</a>
+    <?php endforeach; ?>
+</body>
+</html>
