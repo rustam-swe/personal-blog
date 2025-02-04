@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+.container {
+    margin: 0 auto;
+    max-width: 1500px;
+}
+.item {
+    margin-top: 20px;
+    border: 1px solid aqua;
+    padding: 20px 30px;
+    border-radius: 20px;
+}
+.item h2 {
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
+}
+.item p {
+    color: black;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.wrap {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info {
+    font-weight: 700;
+    background-color: aqua;
+    border-radius: 20px;
+    padding: 10px;
+}
+.edit {
+    color: white;
+    font-weight: 700;
+    background-color: rgb(4, 255, 58);
+    border-radius: 20px;
+    padding: 10px;
+}
+.delete {
+    color: white;
+    font-weight: 700;
+    background-color: red;
+    border-radius: 20px;
+    padding: 10px;
+}
+.form {
+    margin: 20px 0;
+    text-align: center;
+}
+.form input {
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px 0 10px 10px ;
+}
+.form button {
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px ;
+} 
