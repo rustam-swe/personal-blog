@@ -1,3 +1,5 @@
-This is the first commit
-This is the second commit (modified)
-This is the 3rd line
+<?php
+
+// This is the first commit
+// This is the second commit (modified)
+// This is the 3rd line
