@@ -20,6 +20,7 @@ if (!$post) die("Post not found!");
 <body>
     <h1><?= htmlspecialchars($post['title']) ?></h1>
     <p><?= nl2br(htmlspecialchars($post['text'])) ?></p>
+    <div><?=$post['created_at']?></div>
     <a href="index.php">Return to homepage</a>
 </body>
 </html>

@@ -21,6 +21,8 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?= htmlspecialchars($post['title']) ?>
             </a>
         </h2>
+        <span><?=$post['created_at']?></span>
+        <span><i><?=$post['updated_at']?></i></span>
         <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
         <a href="edit.php?id=<?= $post['id'] ?>">edit</a>
         <a href="delete.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')">delete</a>
