@@ -1,89 +1,173 @@
+<?php
+include 'db.php';
+
+// SQL so‘rovi orqali postlar va mualliflarni olish
+$stmt = $db->query("
+    SELECT posts.id, posts.title, posts.text, posts.created_at, posts.updated_at, 
+           COALESCE(users.name, 'Unknown Author') AS author
+    FROM posts
+    LEFT JOIN users ON posts.user_id = users.id
+    ORDER BY posts.created_at DESC
+");
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-<div class="container mt-5">
-    <h1 class="text-center">📜 Personal Blog</h1>
-
-    <div class="card p-4 shadow-sm mb-4">
-        <form action="index.php" method="post">
-            <input type="hidden" name="post_id" value="">
-            <input type="text" name="title" class="form-control mb-2" placeholder="Title" required>
-            <textarea name="text" class="form-control mb-2" placeholder="Post mazmuni" required></textarea>
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
-        </form>
-    </div>
-
-    <?php
-    try {
-        $db = new PDO("mysql:host=localhost;dbname=PERSONAL_BLOG", 'root', '0404');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        die("<p class='text-danger text-center'>Connection failed: " . $e->getMessage() . "</p>");
-    }
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $post_id = $_POST['post_id'] ?? null;
-        $title = $_POST['title'] ?? null;
-        $text = $_POST['text'] ?? null;
-        $date = date('Y-m-d H:i:s');
-
-        if ($title && $text) {
-            if ($post_id) {
-                $stmt = $db->prepare("UPDATE posts SET TITLE = :TITLE, CANTENT = :CANTENT WHERE ID = :ID");
-                $stmt->execute(['TITLE' => $title, 'CANTENT' => $text, 'ID' => $post_id]);
-                echo "<div class='alert alert-success text-center'>Post muvaffaqiyatli yangilandi!</div>";
-            } else {
-                $stmt = $db->prepare("INSERT INTO posts(TITLE, CANTENT, CREATED_AT) VALUES(:TITLE, :CANTENT, :CREATED_AT)");
-                $stmt->execute(['TITLE' => $title, 'CANTENT' => $text, 'CREATED_AT' => $date]);
-                echo "<div class='alert alert-success text-center'>Post muvaffaqiyatli qo‘shildi!</div>";
-            }
+    <style>
+        /* Umumiy container */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
         }
-    }
 
-    if (isset($_GET['delete'])) {
-        $delete_id = $_GET['delete'];
-        $stmt = $db->prepare("DELETE FROM posts WHERE ID = :ID");
-        $stmt->execute(['ID' => $delete_id]);
-        echo "<div class='alert alert-danger text-center'>Post o‘chirildi!</div>";
-    }
-    ?>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    <h2 class="text-center my-4">📌 Barcha Postlar</h2>
-    <div class="row">
-        <?php
-        $stmt = $db->query("SELECT * FROM posts ORDER BY CREATED_AT DESC");
-        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        /* Blog sarlavhasi */
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
 
-        if ($posts) {
-            foreach ($posts as $post) {
-                echo "
-                <div class='col-md-4 mb-3'>
-                    <div class='card shadow-sm'>
-                        <div class='card-body'>
-                            <h5 class='card-title'>{$post['TITLE']}</h5>
-                            <p class='card-text'>{$post['CANTENT']}</p>
-                            <small class='text-muted'>📅 {$post['CREATED_AT']}</small>
-                            <div class='mt-3'>
-                                <a href='index.php?edit={$post['ID']}' class='btn btn-sm btn-warning'>✏ Tahrirlash</a>
-                                <a href='index.php?delete={$post['ID']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Rostdan ham o‘chirmoqchimisiz?\")'>🗑 O‘chirish</a>
-                            </div>
+        /* Postlarni joylash */
+        .posts {
+            margin-top: 20px;
+        }
+
+        /* Har bir post uchun karta */
+        .post-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .post-card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Post nomi */
+        .post-card h2 {
+            margin: 0;
+            color: #007bff;
+        }
+
+        .post-card h2 a {
+            text-decoration: none;
+        }
+
+        .post-card h2 a:hover {
+            text-decoration: underline;
+        }
+
+        /* Muallif va sana */
+        .author, .date {
+            font-size: 14px;
+            color: #777;
+        }
+
+        /* Post qisqacha tavsif */
+        .excerpt {
+            margin: 10px 0;
+        }
+
+        /* Tugmalar */
+        .buttons {
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .btn-read {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-primary {
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Postlar mavjud bo‘lmasa */
+        .no-posts {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📖 Personal Blog</h1>
+        <a href="create.php" class="btn btn-primary">➕ Add new post</a>
+
+        <div class="posts">
+            <?php if (count($posts) > 0): ?>
+                <?php foreach ($posts as $post): ?>
+                    <div class="post-card">
+                        <h2>
+                            <a href="post.php?id=<?= $post['id'] ?>">
+                                <?= htmlspecialchars($post['title']) ?>
+                            </a>
+                        </h2>
+                        <p class="author">✍️ Author: <b><?= htmlspecialchars($post['author']) ?></b></p>
+                        <p class="date">🕒 <?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></p>
+                        <p class="excerpt"><?= nl2br(htmlspecialchars(substr($post['text'], 0, 120))) ?>...</p>
+                        <div class="buttons">
+                            <a href="post.php?id=<?= $post['id'] ?>" class="btn btn-read">📖 Read more</a>
+                            <a href="edit.php?id=<?= $post['id'] ?>" class="btn btn-edit">✏️ Edit</a>
+                            <a href="delete.php?id=<?= $post['id'] ?>" class="btn btn-delete" onclick="return confirm('Do you want to delete?')">🗑️ Delete</a>
                         </div>
                     </div>
-                </div>";
-            }
-        } else {
-            echo "<p class='text-center text-muted'>🚫 Hozircha hech qanday post mavjud emas.</p>";
-        }
-        ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="no-posts">No posts found.</p>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
 
 </body>
 </html>
