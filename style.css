@@ -61,4 +61,9 @@
 .form button {
     border-radius: 10px;
     padding: 10px 10px 10px 10px ;
-} 
+}
+header ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

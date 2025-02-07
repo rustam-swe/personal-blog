@@ -1,8 +1,13 @@
 <?php
 include "db.php";
 
-$stmt = $db->query("SELECT * FROM blog ORDER BY created_at DESC");
-$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$data = $db->query("SELECT * FROM blog ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+
+if(isset($_COOKIE['user'])) {
+	$user = $_COOKIE['user'];
+}else {
+    header("Location: /login.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,10 +21,19 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <header>
         <div class="container">
         <ul>
-            <li>
-                <a href="/">Home</a>
-                <a href="/admin.php">Admin</a>
-            </li>
+    		<li>
+                	<a href="/">Home</a>
+                	<a href="/admin.php">Admin</a>
+		</li>
+		<li>
+		<?php
+			if(!$user) {
+			echo "<a href='login.php'>Login</a><a href='register.php'>Sign up</a>";
+			} else {
+			echo "<a href='/'>{$user}</a>";
+			}
+		?>
+		</li>
         </ul>
         </div>
     </header>
