@@ -1,6 +1,6 @@
 <?php
 
-include "db.php";
+include "../db.php";
 
 $stmt = $db->prepare("CREATE TABLE IF NOT EXISTS posts (
     id INT AUTO_INCREMENT PRIMARY KEY,

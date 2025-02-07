@@ -1,4 +1,14 @@
 <?php
+
+
+
+$userId = $_COOKIE['user_id'];
+
+if (!$_COOKIE['user_id']){
+    header('Location: /register.php');
+}
+
+
 include 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
