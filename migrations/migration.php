@@ -1,11 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "root5005";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=todo", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+include "../db.php";
     $stmt = $conn->prepare("CREATE TABLE IF NOT EXISTS blog(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) NOT NULL ,

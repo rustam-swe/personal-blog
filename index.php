@@ -1,13 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "root5005";
+include "db.php";
 
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=todo", $username, $password);
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-}
+$stmt = $db->query("SELECT * FROM blog ORDER BY created_at DESC");
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +27,6 @@ try {
             <div class="container">
             <ul class="list">
             <?php
-                $data = $conn->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
                 if(count($data) > 0) {
                     foreach($data as $item) {
                         echo "
@@ -40,7 +34,8 @@ try {
                         <h2>{$item['title']}</h2>
                         <p>{$item['text']}</p>
                         <div class='wrap'>
-                        <p>{$item['created_at']}</p>
+			<p>{$item['created_at']}</p>
+			<span>{$item['updated_at']}</span>
                         <form action='single.php' method='post'>
                             <input type='hidden' name='id' value='{$item['id']}'>
                             <button class='info'>Batafsil</button>
