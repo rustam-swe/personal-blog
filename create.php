@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <textarea name="text" placeholder="text" required></textarea><br>
         <button type="submit">submit</button>
     </form>
-    <style>
+    <!-- <style>
     .submit-btn {
         background-color: #333;
         background: linear-gradient(to bottom, #333, #444);
@@ -38,6 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     .submit-btn:hover {
         background: linear-gradient(to bottom, #444, #555);
     }
-</style>
+</style> -->
 </body>
 </html>
