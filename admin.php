@@ -1,19 +1,11 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "root5005";
-
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=todo", $username, $password);
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-}
+include "db.php";
 $title = isset($_POST['title']) ? $_POST['title'] : null;
 $text = isset($_POST['text']) ? $_POST['text'] : null;
 if($text != null) {
-    $conn->query("INSERT INTO blog( title, text ) VALUES ('$title','$text')");
+    $db->query("INSERT INTO blog( title, text ) VALUES ('$title','$text')");
 }
-$data = $conn->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
+$data = $db->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['id'])){
     $id = $_GET['id'];
     var_dump($id);
@@ -22,7 +14,7 @@ if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId
     $newTitle = $_POST['newTitle'];
     $newText = $_POST['newText'];
     $id = $_POST['newId'];
-    $stmt = $conn->prepare("UPDATE blog SET title = :title, text = :text WHERE id = :id");
+    $stmt = $db->prepare("UPDATE blog SET title = :title, text = :text WHERE id = :id");
     $stmt->bindParam(':title', $newTitle);
     $stmt->bindParam(':text', $newText);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -30,7 +22,7 @@ if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId
 }
     if (isset($_POST['deleteId'])) {
         $id = $_POST['deleteId'];
-        $stmt = $conn->prepare("DELETE FROM  blog WHERE id = :id");
+        $stmt = $db->prepare("DELETE FROM  blog WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
@@ -62,7 +54,6 @@ if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId
     </form>
     <ul>
         <?php
-            $data = $conn->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
             if(count($data) > 0) {
                 foreach($data as $item) {
                     echo "

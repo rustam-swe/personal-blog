@@ -1,20 +1,13 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "root5005";
-
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=todo", $username, $password);
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-}
+include "db.php";
+$data = $db->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_POST['id'])) {
     $id = $_POST['id'];
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">{}
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +27,6 @@ if(isset($_POST['id'])) {
     </header>
     <div class="container">
     <?php
-        $data = $conn->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
             foreach($data as $item) {
                 if($id == $item['id']){
                     echo "
