@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // MySQL ulanish fayli
+require '../db.php'; // MySQL ulanish fayli
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_btn'])) {
     $name = trim($_POST["name"]);

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php'; // MySQL ulanishi
+require 'db.php'; // MySQL ulanishi
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"]);
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 
   <div class="container">
-    <p>Ro‘yxatdan o‘tmaganmisiz? <a href="register.php">Registratsiya</a></p>
+    <p>Ro‘yxatdan o‘tmaganmisiz? <a href="/pages/register.php">Registratsiya</a></p>
   </div>
 </form>
 
