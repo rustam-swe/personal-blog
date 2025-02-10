@@ -8,11 +8,13 @@
     }
     $title = isset($_POST['title']) ? $_POST['title'] : null;
     $text = isset($_POST['text']) ? $_POST['text'] : null;
+    $status = isset($_POST['status']) ? $_POST['status'] : null;
     
     if($text != null && $title != null) {
-        $stmt = $db->prepare("INSERT INTO blog(title, text, user_id ) VALUES(:title, :text, :user_id)");
+        $stmt = $db->prepare("INSERT INTO blog(title, text, status, user_id ) VALUES(:title, :text, :status, :user_id)");
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':text', $text);
+        $stmt->bindParam(':status', $status);
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
     }
@@ -27,6 +29,12 @@
         $stmt->bindParam(':text', $newText);
         $stmt->bindParam(':status', $newStatus);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    if (isset($_POST['deleteId'])) {
+        $id = $_POST['deleteId'];
+        $stmt = $db->prepare("DELETE FROM  blog WHERE id = :id");
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
     if(isset($_GET['delete_cookie'])) {
@@ -50,13 +58,12 @@
 <body>
 <header>
     <div class="container">
-        <ul>
+        <ul class="header__list">
             <li>
                 <a href="/">Home</a>
-                <a href="/admin.php">Admin</a>
             </li>
             <li>
-                    <a href="?delete_cookie=1">Cookie O'chirish</a>
+                    <a href="?delete_cookie=1">Log out</a>
             </li>
         </ul>
     </div>
@@ -65,6 +72,10 @@
         <form class="form" action="user.php" method="post">
             <input type="text" name="title" id="" placeholder="Sarlavhani yozing">
             <input type="text" name="text" id="" placeholder="Text qo'shing">
+            <select name="status" id="">
+                <option value="drafted">Drafted</option>
+                <option value="published">Published</option>
+            </select>
             <button class="" type="submit">Add task</button>
         </form>
         <ul>
@@ -82,7 +93,7 @@
                     <input type='hidden' name='id' value='{$item['id']}'>
                     <button class='edit'>Edit</button>
                     </form>
-                     <form action='admin.php' method='post'>
+                     <form action='user.php' method='post'>
                     <input type='hidden' name='deleteId' value='{$item['id']}'>
                     <button class='delete'>Delete</button>
                     </form>

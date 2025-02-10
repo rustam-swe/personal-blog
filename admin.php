@@ -38,10 +38,9 @@ if (isset($_POST['deleteId'])) {
 <body>
     <header>
             <div class="container">
-            <ul>
+            <ul class="header__list">
                 <li>
                     <a href="/">Home</a>
-                    <a href="/admin.php">Admin</a>
                 </li>
             </ul>
             </div>

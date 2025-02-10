@@ -19,9 +19,8 @@ $data = $db->query("SELECT * FROM blog WHERE id = $id")->fetchAll(PDO::FETCH_ASS
     <header>
         <div class="container">
         <ul>
-            <li>
+            <li class="header__list">
                 <a href="/">Home</a>
-                <a href="/admin.php">Admin</a>
             </li>
         </ul>
         </div>

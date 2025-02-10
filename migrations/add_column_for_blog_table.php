@@ -6,6 +6,6 @@ $update->execute();
 $user_id = $db->prepare('ALTER TABLE blog ADD user_id int');
 $user_id->execute();
 $status = $db->prepare("ALTER TABLE blog ADD status ENUM('published', 'drafted') DEFAULT 'drafted'");
-$user_id->execute();
+$status->execute();
 echo "Added user_id to posts table";
 ?>

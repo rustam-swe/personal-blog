@@ -25,6 +25,7 @@
 }
 .wrap {
     margin-top: 10px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -70,4 +71,7 @@ header ul {
 .form select {
     border-radius: 10px;
     padding: 10px 0 10px 10px ;
+}
+.header__list {
+    padding: 20px 0;
 }

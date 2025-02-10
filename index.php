@@ -1,7 +1,7 @@
 <?php
 include "db.php";
 
-$data = $db->query("SELECT * FROM blog WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
+$data = $db->query("SELECT * FROM blog JOIN users on blog.user_id = users.id WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_COOKIE['user'])) {
 	$user = $_COOKIE['user'];
@@ -21,11 +21,10 @@ if(isset($_COOKIE['user'])) {
     <body>
     <header>
         <div class="container">
-        <ul>
+        <ul class="header__list">
     		<li>
-                	<a href="/">Home</a>
-                	<a href="/admin.php">Admin</a>
-		</li>
+            	<a href="/">Home</a>
+		    </li>
 		<li>
 		<?php
 			if(!$user) {
@@ -49,13 +48,14 @@ if(isset($_COOKIE['user'])) {
                         <h2>{$item['title']}</h2>
                         <p>{$item['text']}</p>
                         <div class='wrap'>
-			<p>{$item['created_at']}</p>
-			<span>{$item['updated_at']}</span>
+			            <p>{$item['created_at']}</p>
+			            <span>{$item['updated_at']}</span>
                         <form action='single.php' method='post'>
                             <input type='hidden' name='id' value='{$item['id']}'>
                             <button class='info'>Batafsil</button>
                         </form>
                         </div>
+                        <p>Author: <b>{$item['name']}</b></p>
                         </li>";
                     }
                 } else {
