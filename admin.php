@@ -8,7 +8,6 @@ if($text != null) {
 $data = $db->query("SELECT * FROM blog")->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['id'])){
     $id = $_GET['id'];
-    var_dump($id);
 }
 if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId'])){
     $newTitle = $_POST['newTitle'];
@@ -20,12 +19,12 @@ if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
 }
-    if (isset($_POST['deleteId'])) {
-        $id = $_POST['deleteId'];
-        $stmt = $db->prepare("DELETE FROM  blog WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-    }
+if (isset($_POST['deleteId'])) {
+    $id = $_POST['deleteId'];
+    $stmt = $db->prepare("DELETE FROM  blog WHERE id = :id");
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,25 +32,26 @@ if (isset($_POST['newTitle']) && isset($_POST['newText']) && isset($_POST['newId
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
-<header>
-        <div class="container">
-        <ul>
-            <li>
-                <a href="/">Home</a>
-                <a href="/admin.php">Admin</a>
-            </li>
-        </ul>
-        </div>
-    </header>
-   <div class="container">
-    <form class="form" action="admin.php" method="post">
-        <input type="text" name="title" id="" placeholder="Sarlavhani yozing">
-        <input type="text" name="text" id="" placeholder="Text qo'shing">
-        <button class="" type="submit">Add task</button>
-    </form>
+    <header>
+            <div class="container">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                    <a href="/admin.php">Admin</a>
+                </li>
+            </ul>
+            </div>
+        </header>
+    <div class="container">
+        <form class="form" action="admin.php" method="post">
+            <input type="text" name="title" id="" placeholder="Sarlavhani yozing">
+            <input type="text" name="text" id="" placeholder="Text qo'shing">
+            <button class="" type="submit">Add task</button>
+        </form>
     <ul>
         <?php
             if(count($data) > 0) {

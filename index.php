@@ -1,7 +1,7 @@
 <?php
 include "db.php";
 
-$data = $db->query("SELECT * FROM blog ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$data = $db->query("SELECT * FROM blog WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_COOKIE['user'])) {
 	$user = $_COOKIE['user'];
@@ -14,6 +14,7 @@ if(isset($_COOKIE['user'])) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="./style.css">
         <title>Document</title>
     </head>
@@ -30,7 +31,7 @@ if(isset($_COOKIE['user'])) {
 			if(!$user) {
 			echo "<a href='login.php'>Login</a><a href='register.php'>Sign up</a>";
 			} else {
-			echo "<a href='/'>{$user}</a>";
+			echo "<a href='/user.php'>{$user}</a>";
 			}
 		?>
 		</li>
@@ -58,7 +59,7 @@ if(isset($_COOKIE['user'])) {
                         </li>";
                     }
                 } else {
-                    echo "<h1>Please add a task.</h1>";
+                    echo "<h1 style='text-align:center;'>There is no news announced at this time..</h1>";
                 }
             ?>
             </div>
