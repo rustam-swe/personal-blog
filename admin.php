@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+require "db.php";
 $title = isset($_POST['title']) ? $_POST['title'] : null;
 $text = isset($_POST['text']) ? $_POST['text'] : null;
 if($text != null) {

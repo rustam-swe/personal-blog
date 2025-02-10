@@ -1,5 +1,5 @@
 <?php
-// include "db.php";
+// require "db.php";
 // if(isset($_POST['userName'],$_POST['userEmail'],$_POST['userPass'])) {
 //     $userName = $_POST['userName'];
 // 	$userEmail = $_POST['userEmail'];
@@ -48,7 +48,7 @@
 </body>
 </html> -->
 <?php
-include "db.php";
+require "db.php";
 $users = $db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_POST['userName'],$_POST['userEmail'],$_POST['userPass'])) {

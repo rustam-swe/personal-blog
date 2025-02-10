@@ -1,5 +1,5 @@
 <?php
-    include "db.php";
+    require "db.php";
     
     if(isset($_COOKIE['user'])) {
         $userName = $_COOKIE['user'];

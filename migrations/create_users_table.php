@@ -1,6 +1,6 @@
 <?php
 
-include "../db.php";
+require "../db.php";
 
 // Users Table
 $query  = "CREATE TABLE users(";

@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+require "db.php";
 
 $data = $db->query("SELECT * FROM blog JOIN users on blog.user_id = users.id WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
 

@@ -1,5 +1,5 @@
 <?php
-include "../db.php";
+require "../db.php";
   $stmt = $db->prepare("CREATE TABLE IF NOT EXISTS blog(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) NOT NULL ,

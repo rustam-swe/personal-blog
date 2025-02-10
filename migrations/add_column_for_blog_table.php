@@ -1,5 +1,5 @@
 <?php
-include "../db.php";
+require "../db.php";
 
 $update = $db->prepare("ALTER TABLE blog ADD updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP");
 $update->execute();
