@@ -26,7 +26,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         h1 {
             color: #333;
-        }device-width
+        }
         .post {
             border-bottom: 1px solid #ddd;
             padding-bottom: 15px;

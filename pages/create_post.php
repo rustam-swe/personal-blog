@@ -1,11 +1,8 @@
 <?php
-include 'db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $text = $_POST['text'];
-    $stmt = $db->prepare("INSERT INTO posts (title, text) VALUES (:title, :text)");
-    $stmt->execute(['title' => $title, 'text' => $text]);
-    header("Location: index.php");
+// TODO: Create post logic
 }
 ?>
 
