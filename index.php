@@ -1,12 +1,12 @@
 <?php
 require "db.php";
 
-$data = $db->query("SELECT * FROM blog JOIN users on blog.user_id = users.id WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
+$data = $db->query("SELECT posts.id, title, text, name, created_at, updated_at FROM posts JOIN users on posts.user_id = users.id WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_COOKIE['user'])) {
 	$user = $_COOKIE['user'];
 }else {
-    header("Location: /login.php");
+    header("Location: /pages/login.php");
 }
 ?>
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ if(isset($_COOKIE['user'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="../css/style.css">
         <title>Document</title>
     </head>
     <body>
@@ -28,9 +28,9 @@ if(isset($_COOKIE['user'])) {
 		<li>
 		<?php
 			if(!$user) {
-			echo "<a href='login.php'>Login</a><a href='register.php'>Sign up</a>";
+			echo "<a href='/pages/login.php'>Login</a><a href='/pages/register.php'>Sign up</a>";
 			} else {
-			echo "<a href='/user.php'>{$user}</a>";
+			echo "<a href='/pages/user.php'>{$user}</a>";
 			}
 		?>
 		</li>
@@ -50,9 +50,9 @@ if(isset($_COOKIE['user'])) {
                         <div class='wrap'>
 			            <p>{$item['created_at']}</p>
 			            <span>{$item['updated_at']}</span>
-                        <form action='single.php' method='post'>
+                        <form action='/pages/single.php' method='post'>
                             <input type='hidden' name='id' value='{$item['id']}'>
-                            <button class='info'>Batafsil</button>
+                            <button class='info'>Batafsil{$item['id']}</button>
                         </form>
                         </div>
                         <p>Author: <b>{$item['name']}</b></p>

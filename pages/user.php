@@ -1,5 +1,5 @@
 <?php
-    require "db.php";
+    require "../db.php";
     
     if(isset($_COOKIE['user'])) {
         $userName = $_COOKIE['user'];
@@ -11,7 +11,7 @@
     $status = isset($_POST['status']) ? $_POST['status'] : null;
     
     if($text != null && $title != null) {
-        $stmt = $db->prepare("INSERT INTO blog(title, text, status, user_id ) VALUES(:title, :text, :status, :user_id)");
+        $stmt = $db->prepare("INSERT INTO posts(title, text, status, user_id ) VALUES(:title, :text, :status, :user_id)");
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':text', $text);
         $stmt->bindParam(':status', $status);
@@ -24,7 +24,7 @@
         $newText = $_POST['newText'];
         $newStatus = $_POST['newStatus'];
         $id = $_POST['newId'];
-        $stmt = $db->prepare("UPDATE blog SET title = :title, text = :text, status = :status WHERE id = :id");
+        $stmt = $db->prepare("UPDATE posts SET title = :title, text = :text, status = :status WHERE id = :id");
         $stmt->bindParam(':title', $newTitle);
         $stmt->bindParam(':text', $newText);
         $stmt->bindParam(':status', $newStatus);
@@ -33,7 +33,7 @@
     }
     if (isset($_POST['deleteId'])) {
         $id = $_POST['deleteId'];
-        $stmt = $db->prepare("DELETE FROM  blog WHERE id = :id");
+        $stmt = $db->prepare("DELETE FROM  posts WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
@@ -41,7 +41,7 @@
         setcookie("user", "", time() - 3600);
         header("Location: /");
     }
-    $stmt = $db->prepare("SELECT id, title, created_at, updated_at, user_id, status, text FROM blog WHERE user_id = ?");
+    $stmt = $db->prepare("SELECT id, title, created_at, updated_at, user_id, status, text FROM posts WHERE user_id = ?");
     $stmt->execute([$userId]);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -53,7 +53,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <header>
@@ -62,9 +62,9 @@
             <li>
                 <a href="/">Home</a>
             </li>
-            <li>
-                    <a href="?delete_cookie=1">Log out</a>
-            </li>
+            <!-- <li>
+                <a href="?delete_cookie=1">Log out</a>
+            </li> -->
         </ul>
     </div>
         </header>
@@ -89,7 +89,7 @@
                     <p>Created: {$item['created_at']}</p>
                     <p>Updated: {$item['updated_at']}</p>
                     <div style='display: flex;gap: 5px;'>
-                    <form action='blog.php' method='post'>
+                    <form action='/pages/edit_post.php' method='post'>
                     <input type='hidden' name='id' value='{$item['id']}'>
                     <button class='edit'>Edit</button>
                     </form>
