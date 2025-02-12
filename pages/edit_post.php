@@ -1,5 +1,9 @@
 <?php
 require "../db.php";
+require "../controllers/post_controller.php";
+if (isset($_POST['newTitle'],$_POST['newText'],$_POST['newId'],$_POST['newStatus'])){
+    $editPost();
+}
 $title = isset($_POST['title']) ? $_POST['title'] : null;
 $text = isset($_POST['text']) ? $_POST['text'] : null;
 if (isset($_POST['id'])){
@@ -30,7 +34,7 @@ $byIdStatus = $data['status'];
         </div>
     </header>
     <div class="container">
-    <form class="form" action="/pages/user.php" method="POST">
+    <form class="form" action="/pages/edit_post.php" method="POST">
         <input type="hidden" value='<?php echo $id; ?>' name="newId">
         <input value="<?php echo "$byIdTitle";?>" type="text" name="newTitle" id="" placeholder="Sarlavhani yozing">
         <input value="<?php echo "$byIdText";?>" type="text" name="newText" id="" placeholder="Text qo'shing">

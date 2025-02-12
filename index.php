@@ -1,7 +1,5 @@
 <?php
-require "db.php";
-
-$data = $db->query("SELECT posts.id, title, text, name, created_at, updated_at FROM posts JOIN users on posts.user_id = users.id WHERE status = 'published'")->fetchAll(PDO::FETCH_ASSOC);
+require "./controllers/post_controller.php";
 
 if(isset($_COOKIE['user'])) {
 	$user = $_COOKIE['user'];
@@ -41,6 +39,7 @@ if(isset($_COOKIE['user'])) {
             <div class="container">
             <ul class="list">
             <?php
+            $data = $fetchPosts();
                 if(count($data) > 0) {
                     foreach($data as $item) {
                         echo "
@@ -52,7 +51,7 @@ if(isset($_COOKIE['user'])) {
 			            <span>{$item['updated_at']}</span>
                         <form action='/pages/single.php' method='post'>
                             <input type='hidden' name='id' value='{$item['id']}'>
-                            <button class='info'>Batafsil{$item['id']}</button>
+                            <button class='info'>Batafsil</button>
                         </form>
                         </div>
                         <p>Author: <b>{$item['name']}</b></p>

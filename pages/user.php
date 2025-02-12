@@ -1,49 +1,46 @@
 <?php
     require "../db.php";
-    
-    if(isset($_COOKIE['user'])) {
-        $userName = $_COOKIE['user'];
-        $user = $db->query("SELECT * FROM users WHERE name = '$userName'")->fetch(PDO::FETCH_ASSOC);
-        $userId = $user['id'];
-    }
+    require "../controllers/user_controller.php";
+    require "../controllers/post_controller.php";
+
     $title = isset($_POST['title']) ? $_POST['title'] : null;
     $text = isset($_POST['text']) ? $_POST['text'] : null;
     $status = isset($_POST['status']) ? $_POST['status'] : null;
-    
+
+    $userId = $findUserId();
+
+    $data = $userPost($userId);
+
     if($text != null && $title != null) {
-        $stmt = $db->prepare("INSERT INTO posts(title, text, status, user_id ) VALUES(:title, :text, :status, :user_id)");
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':text', $text);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':user_id', $userId);
-        $stmt->execute();
+       $createPost($title,$text,$status,$userId);
     }
 
-    if (isset($_POST['newTitle'],$_POST['newText'],$_POST['newId'],$_POST['newStatus'])){
-        $newTitle = $_POST['newTitle'];
-        $newText = $_POST['newText'];
-        $newStatus = $_POST['newStatus'];
-        $id = $_POST['newId'];
-        $stmt = $db->prepare("UPDATE posts SET title = :title, text = :text, status = :status WHERE id = :id");
-        $stmt->bindParam(':title', $newTitle);
-        $stmt->bindParam(':text', $newText);
-        $stmt->bindParam(':status', $newStatus);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-    }
     if (isset($_POST['deleteId'])) {
-        $id = $_POST['deleteId'];
-        $stmt = $db->prepare("DELETE FROM  posts WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $deletePost();
     }
-    if(isset($_GET['delete_cookie'])) {
-        setcookie("user", "", time() - 3600);
-        header("Location: /");
-    }
-    $stmt = $db->prepare("SELECT id, title, created_at, updated_at, user_id, status, text FROM posts WHERE user_id = ?");
-    $stmt->execute([$userId]);
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // if($text != null && $title != null) {
+    //     $stmt = $db->prepare("INSERT INTO posts(title, text, status, user_id ) VALUES(:title, :text, :status, :user_id)");
+    //     $stmt->bindParam(':title', $title);
+    //     $stmt->bindParam(':text', $text);
+    //     $stmt->bindParam(':status', $status);
+    //     $stmt->bindParam(':user_id', $userId);
+    //     $stmt->execute();
+    // }
+
+    // if (isset($_POST['newTitle'],$_POST['newText'],$_POST['newId'],$_POST['newStatus'])){
+    //     $newTitle = $_POST['newTitle'];
+    //     $newText = $_POST['newText'];
+    //     $newStatus = $_POST['newStatus'];
+    //     $id = $_POST['newId'];
+    //     $stmt = $db->prepare("UPDATE posts SET title = :title, text = :text, status = :status WHERE id = :id");
+    //     $stmt->bindParam(':title', $newTitle);
+    //     $stmt->bindParam(':text', $newText);
+    //     $stmt->bindParam(':status', $newStatus);
+    //     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    //     $stmt->execute();
+    // }
+  
 ?>
 
 <!DOCTYPE html>

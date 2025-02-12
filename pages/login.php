@@ -1,20 +1,13 @@
 <?php
-require "../db.php";
-if(isset($_POST['userName'],$_POST['userEmail'],$_POST['userPass'])) {
-    $userName = $_POST['userName'];
-	$userEmail = $_POST['userEmail'];
-	$userPass = $_POST['userPass'];
-    $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
-    $stmt->execute([
-        'email' => $userEmail,
-    ]);
-    $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if($user) {
-	    setcookie("user", $userName, time() + (86400 * 30), "/");
-        header("Location: /");
-    }else {
-        echo "username yoki email yoki password noto'g'ri";
-    }
+require "../controllers/user_controller.php";
+if(isset($_POST['userEmail'],$_POST['userPass'])) {
+	$user = $loginUser($_POST['userEmail'],$_POST['userPass']);
+	if ($user) {
+		setcookie("user", $user['name'], time() + (86400 * 30), "/");
+		header("Location: /");
+	}else {
+        echo "email yoki password noto'g'ri";
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -27,10 +20,6 @@ if(isset($_POST['userName'],$_POST['userEmail'],$_POST['userPass'])) {
 </head>
 <body>
 <form action="/pages/login.php" method="POST">
-	<div class="mb-3">	
-		<label for="userName" class="form-label">Username</label>
-		<input type="text" class="form-control" name="userName" required placeholder="Username kiriting: " id="userName">
-	</div>
 	<div class="mb-3">	
 		<label for="exampleInputEmail1" class="form-label">Email address</label>
 		<input type="email" name="userEmail" class="form-control" required placeholder="email kiriting: " id="exampleInputEmail1">

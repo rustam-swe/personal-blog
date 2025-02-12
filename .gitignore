@@ -1,0 +1,5 @@
+.vscode
+.ide
+.DS_Store
+credentials.php
+admin.php
