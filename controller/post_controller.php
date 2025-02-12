@@ -1,5 +1,5 @@
 <?php
-require '../db.php';
+require __DIR__ . '/../db.php';
 
 function fetchPosts($db) {
     session_start(); 
@@ -75,9 +75,18 @@ function editPost($db){
         $stmt->execute(['title' => $title, 'text' => $text, 'id' => $id, 'user_id' => $user_id]);
 
         header("Location: posts.php");
-        exit;
+        exit;require "controller/post_controller.php";
+        $allposts = indexPosts($db, $allposts);
     }
     return $post;
 }   
+
+function indexPosts($db){
+    $conn = $db;
+    $sql = "SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC";
+    $stmt = $conn->query($sql);
+    $allposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $allposts;
+}
 
 ?>

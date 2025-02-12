@@ -27,11 +27,8 @@
     <div class="container">
         <h1>Personal Blog</h1>
         <?php
-            require "db.php";
-            $conn = $db;
-            $sql = "SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC";
-            $stmt = $conn->query($sql);
-            $allposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+           require __DIR__ . '/controller/post_controller.php';
+           $allposts = indexPosts($db, $allposts);
 
             foreach ($allposts as $posts) { 
                 echo "<div class='card mb-3'>";
