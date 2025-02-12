@@ -1,11 +1,12 @@
 <?php
+session_start();
 require "./controllers/post_controller.php";
 
-if(isset($_COOKIE['user'])) {
-	$user = $_COOKIE['user'];
-}else {
-    header("Location: /pages/login.php");
-}
+//if(isset($_COOKIE['user'])) {
+//	$user = $_COOKIE['user'];
+//}else {
+//    header("Location: /pages/login.php");
+//}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,13 +26,14 @@ if(isset($_COOKIE['user'])) {
 		    </li>
 		<li>
 		<?php
-			if(!$user) {
+			if(!$_SESSION['email']) {
 			echo "<a href='/pages/login.php'>Login</a><a href='/pages/register.php'>Sign up</a>";
 			} else {
-			echo "<a href='/pages/user.php'>{$user}</a>";
+			echo "<a href='/pages/user.php'>{$_SESSION['email']}</a>";
 			}
 		?>
-		</li>
+    </li>
+<li><a href="/pages/logout.php">Exit</a></li>
         </ul>
         </div>
     </header>

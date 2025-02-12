@@ -6,13 +6,14 @@ if (isset($_POST['newTitle'],$_POST['newText'],$_POST['newId'],$_POST['newStatus
 }
 $title = isset($_POST['title']) ? $_POST['title'] : null;
 $text = isset($_POST['text']) ? $_POST['text'] : null;
+
 if (isset($_POST['id'])){
     $id = $_POST['id'];
+    $data = $db->query("SELECT * FROM posts WHERE id = $id")->fetch(PDO::FETCH_ASSOC);
+    $byIdTitle =  $data['title'];
+    $byIdText = $data['text'];
+    $byIdStatus = $data['status'];
 }
-$data = $db->query("SELECT * FROM posts WHERE id = $id")->fetch(PDO::FETCH_ASSOC);
-$byIdTitle =  $data['title'];
-$byIdText = $data['text'];
-$byIdStatus = $data['status'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
