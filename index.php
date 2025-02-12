@@ -2,34 +2,52 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Personal-Blog</title>
-    <h1>Personal-Blog</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-       
-        p {
-            font-size: 16px;
-            color: #333;
-            margin: 10px 0;
+        body {
+            background-color: #f8f9fa;
         }
-
-       
-        a {
-            color: #007bff; 
-            text-decoration: none; 
-            font-weight: bold;
-            transition: 0.3s ease;
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-     
-        a:hover {
-            color: #0056b3;
-            text-decoration: underline;
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <p>Akkauntga kirish! <a href="/pages/login.php">Sigin in</a></p>
-    <p>Ro‘yxatdan o‘tish! <a href="/pages/register.php">Sigin up</a></p>
+    <div class="container">
+        <h1>Personal Blog</h1>
+        <?php
+            require "db.php";
+            $conn = $db;
+            $sql = "SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC";
+            $stmt = $conn->query($sql);
+            $allposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            foreach ($allposts as $posts) { 
+                echo "<div class='card mb-3'>";
+                echo "<div class='card-body'>";
+                echo "<h2 class='card-title'>" . htmlspecialchars($posts["title"]) . "</h2>";
+                echo "<p class='card-text'>" . nl2br(htmlspecialchars($posts["text"])) . "</p>";
+                echo "<small class='text-muted'>✍️ Muallif: " . htmlspecialchars($posts["name"]) . " | 📅 Yaratilgan sana: " . $posts["created_at"] . "</small>";
+                echo "</div>";
+                echo "</div>";
+            }
+        ?>
+        <div class="text-center mt-4">
+            <p>Akkauntga kirish! <a href="/pages/login.php" class="btn btn-primary">Sign in</a></p>
+            <p>Ro‘yxatdan o‘tish! <a href="/pages/register.php" class="btn btn-success">Sign up</a></p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

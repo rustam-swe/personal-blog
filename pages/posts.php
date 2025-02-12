@@ -1,19 +1,6 @@
 <?php
-require '../db.php';
-session_start(); // Sessiyani boshlash
-
-// Foydalanuvchi login qilganligini tekshirish
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$user_id = $_SESSION['user_id']; // Hozirgi foydalanuvchi ID
-
-// Faqat login bo‘lgan foydalanuvchiga tegishli postlarni olish
-$stmt = $db->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC");
-$stmt->execute(['user_id' => $user_id]);
-$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require "../controller/post_controller.php";
+$posts=fetchPosts($db);
 ?>
 
 <!DOCTYPE html>
@@ -21,29 +8,81 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>My Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {createPosts($db, $title, $text);
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 { fetchposts fetchposts
+            color: #333;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .post {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fff;$posts=fetchPosts($db);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .post h2 a {
+            color: #333;
+        } fetchposts
+        .post p {createPosts($db, $title, $text);
+            color: #666;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .post-actions a {
+            padding: 5px 10px;
+            border-radius: 3px;
+            background: #007bff;$posts=fetchPosts($db);
+            color: white;
+        }
+        .post-actions a:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <a href="login.php">🔙Login.Back</a>
-    <a href="register.php">🔙Register.Back</a>
-    <h2><a href="../index.php">Home🏠</a><br></h2>
-    <h1>My Posts</h1>
-   
-    <a href="create_post.php">Add new post</a>
-
-    <?php if (empty($posts)): ?>
-        <p>No posts available.</p> <!-- Agar post bo'lmasa, xabar chiqadi -->
-    <?php else: ?>
-        <?php foreach ($posts as $post): ?>
-            <h2>
-                <a href="post.php?id=<?= $post['id'] ?>">
-                    <?= htmlspecialchars($post['title']) ?>
-                </a>
-            </h2>
-            <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
-            <span><?=$post['created_at']?></span>
-            <a href="edit_post.php?id=<?= $post['id'] ?>">Edit</a>
-            <a href="delete_post.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')">Delete</a>
-        <?php endforeach; ?>
-    <?php endif; ?>
+    <div class="container">
+        <h2><a href="../index.php">🏠 Home</a></h2>
+        <h1>My Posts</h1>
+        <a href="create_post.php" style="display: inline-block; margin-bottom: 10px; padding: 10px; background: #28a745; color: white; border-radius: 5px;">➕ Add new post</a>
+        <?php if (empty($posts)): ?>
+            <p>No posts available.</p>
+        <?php else: ?>
+            <?php 
+                foreach ($posts as $post): ?>
+                <div class="post">
+                    <h2><a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
+                    <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
+                    <span style="color: #888; font-size: 0.9em;">📅 <?= $post['created_at'] ?> | ✍️ Author: <?= htmlspecialchars($post['name']) ?></span>
+                    <div class="post-actions">
+                        <a href="edit_post.php?id=<?= $post['id'] ?>">✏️ Edit</a>
+                        <a href="delete_post.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')" style="background: #dc3545;">🗑️ Delete</a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </body>
 </html>

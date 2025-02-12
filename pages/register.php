@@ -1,25 +1,11 @@
 <?php
-require '../db.php'; // MySQL ulanish fayli
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_btn'])) {
-    $name = trim($_POST["name"]);
-    $email = trim($_POST["email"]);
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT); // Parolni xavfsiz saqlash
-
-    // Foydalanuvchini bazaga qo‘shish
-    $stmt = $db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    if ($stmt->execute([$name, $email, $password])) {
-        header("Location: register_action.php"); // Muvaffaqiyatli ro‘yxatdan o‘tganida yo‘naltirish
-        exit();
-    } else {
-        echo "Xatolik yuz berdi.";
-    }
-}
+require '../controller/users_controller.php'; 
+registerUser($db, $name, $email, $password)
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">pages/posts.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
 </head>

@@ -1,23 +1,25 @@
-
+<!-- 
 <?php
-include '../db.php';
-
-// SQL JOIN orqali postlar va mualliflarni olish
+require "../db.php";
 $stmt = $db->query("
-    SELECT posts.id, posts.title, posts.text, posts.created_at, posts.updated_at, 
+        SELECT posts.id, posts.title, posts.text, posts.created_at, posts.updated_at, 
            COALESCE(users.name, 'Unknown Author') AS author
-    FROM posts
-    LEFT JOIN users ON posts.user_id = users.id
-    ORDER BY posts.created_at DESC
-");
-$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        FROM posts
+        LEFT JOIN users ON posts.user_id = users.id
+        ORDER BY posts.created_at DESC
+    ");
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// require '../controller/users_controller.ph';
+
+// // SQL JOIN orqali postlar va mualliflarni olish
+// createUser($db, $posts);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>personal_blog</title>
+    <title>Personal_blog</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,7 +57,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?= htmlspecialchars($post['title']) ?>
             </a>
         </h2>
-        <p><b>Author:</b> <?= htmlspecialchars($post['author']) ?></p> 
+        <p><b>Author:</b> <?= htmlspecialchars($post['name']) ?></p> 
         <span><?=$post['created_at']?></span>
         <span><i><?=$post['updated_at']?></i></span>
         <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
@@ -64,4 +66,4 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php endforeach; ?>
 </body>
 </html>
-
+ -->

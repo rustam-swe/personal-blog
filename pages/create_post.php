@@ -1,23 +1,6 @@
 <?php
-require '../db.php';
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = trim($_POST['title']);
-    $text = trim($_POST['text']);
-    $user_id = $_SESSION['user_id'];
-
-    $stmt = $db->prepare("INSERT INTO posts (title, text, user_id) VALUES (:title, :text, :user_id)");
-    $stmt->execute(['title' => $title, 'text' => $text, 'user_id' => $user_id]);
-
-    header("Location: posts.php");
-    exit;
-}
+require "../controller/post_controller.php";
+createPosts($db, $title, $text);
 ?>
 
 
