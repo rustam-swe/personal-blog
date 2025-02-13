@@ -1,12 +1,11 @@
 <?php
 require '../db.php';
+require '../controller/login_and_registratsiya_controller.php';
+
 session_start(); // Sessiyani boshlash
 
 // Foydalanuvchi login qilganligini tekshirish
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
+checkLogin($db);
 
 $user_id = $_SESSION['user_id']; // Hozirgi foydalanuvchi ID
 $id = $_GET['id'] ?? null;

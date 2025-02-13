@@ -26,11 +26,14 @@
 <body>
     <div class="container">
         <h1>Personal Blog</h1>
+        <div class="text-center mt-4">
+            <p>Akkauntga kirish! <a href="/pages/login.php" class="btn btn-primary">Sign in</a></p>
+            <p>Ro‘yxatdan o‘tish! <a href="/pages/register.php" class="btn btn-success">Sign up</a></p>
+        </div>
         <?php
            require __DIR__ . '/controller/post_controller.php';
-           $allposts = indexPosts($db, $allposts);
-
-            foreach ($allposts as $posts) { 
+           $allpostss = indexPosts($db);
+            foreach ($allpostss as $posts) { 
                 echo "<div class='card mb-3'>";
                 echo "<div class='card-body'>";
                 echo "<h2 class='card-title'>" . htmlspecialchars($posts["title"]) . "</h2>";
@@ -40,10 +43,7 @@
                 echo "</div>";
             }
         ?>
-        <div class="text-center mt-4">
-            <p>Akkauntga kirish! <a href="/pages/login.php" class="btn btn-primary">Sign in</a></p>
-            <p>Ro‘yxatdan o‘tish! <a href="/pages/register.php" class="btn btn-success">Sign up</a></p>
-        </div>
+       
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

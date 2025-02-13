@@ -10,7 +10,7 @@ function registerUser($db, $name, $email, $password){
         // Foydalanuvchini bazaga qo‘shish
         $stmt = $db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         if ($stmt->execute([$name, $email, $password])) {
-            header("Location: register_action.php"); // Muvaffaqiyatli ro‘yxatdan o‘tganida yo‘naltirish
+            header("Location: register_action.php");
             exit();
         } else {
             echo "Xatolik yuz berdi.";

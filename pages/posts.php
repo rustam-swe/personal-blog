@@ -15,7 +15,7 @@ $posts=fetchPosts($db);
             margin: 0;
             padding: 20px;
         }
-        .container {createPosts($db, $title, $text);
+        .container {
             max-width: 800px;
             margin: auto;
             background: white;
@@ -23,7 +23,7 @@ $posts=fetchPosts($db);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1, h2 { fetchposts fetchposts
+        h1, h2 { 
             color: #333;
         }
         a {
@@ -36,14 +36,14 @@ $posts=fetchPosts($db);
         .post {
             padding: 15px;
             margin-bottom: 15px;
-            background: #fff;$posts=fetchPosts($db);
+            background: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .post h2 a {
             color: #333;
         } fetchposts
-        .post p {createPosts($db, $title, $text);
+        .post p {
             color: #666;
         }
         .post-actions {
@@ -54,7 +54,7 @@ $posts=fetchPosts($db);
         .post-actions a {
             padding: 5px 10px;
             border-radius: 3px;
-            background: #007bff;$posts=fetchPosts($db);
+            background: #007bff;
             color: white;
         }
         .post-actions a:hover {
@@ -67,15 +67,22 @@ $posts=fetchPosts($db);
         <h2><a href="../index.php">🏠 Home</a></h2>
         <h1>My Posts</h1>
         <a href="create_post.php" style="display: inline-block; margin-bottom: 10px; padding: 10px; background: #28a745; color: white; border-radius: 5px;">➕ Add new post</a>
+        
         <?php if (empty($posts)): ?>
             <p>No posts available.</p>
         <?php else: ?>
-            <?php 
-                foreach ($posts as $post): ?>
+            <?php foreach ($posts as $post): ?>
                 <div class="post">
                     <h2><a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
                     <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
-                    <span style="color: #888; font-size: 0.9em;">📅 <?= $post['created_at'] ?> | ✍️ Author: <?= htmlspecialchars($post['name']) ?></span>
+                    <span style="color: #888; font-size: 0.9em;">📅 <?= $post['created_at'] ?> | ✍️ Author: <?= htmlspecialchars($post['name']) ?></span>  
+                    
+                    <!-- Faqat post tahrirlangan bo‘lsa, "Edited" vaqtini chiqarish -->
+                    <?php if (!empty($post['updated_at'])): ?>
+                        <br>
+                        <span style="color: #888; font-size: 0.9em;">📝 Edited: <?= $post['updated_at'] ?></span>
+                    <?php endif; ?>
+
                     <div class="post-actions">
                         <a href="edit_post.php?id=<?= $post['id'] ?>">✏️ Edit</a>
                         <a href="delete_post.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')" style="background: #dc3545;">🗑️ Delete</a>
