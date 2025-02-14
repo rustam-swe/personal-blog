@@ -1,31 +1,31 @@
 <?php
-require "../db.php";
+require __DIR__ . "/../db.php";
 
 function registerUser($db, $name, $email, $password){
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_btn'])) {
-        $name = trim($_POST["name"]);
-        $email = trim($_POST["email"]);
-        $password = password_hash($_POST["password"], PASSWORD_DEFAULT); // Parolni xavfsiz saqlash
-    
-        // Foydalanuvchini bazaga qo‘shish
-        $stmt = $db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-        if ($stmt->execute([$name, $email, $password])) {
-            header("Location: register_action.php");
-            exit();
-        } else {
-            echo "Xatolik yuz berdi.";
-        }
-    }
+//    if(isset($name, $email, $password)){
+//         $stmt=$db->prepare("INSERT INTO users(name, email, password)
+//                            VALUES($name, $email, $password)");
+//         $stmt->execute();
+//         echo "Okay";
+//    }
 
+   if ($stmt->execute([$name, $email, $password])) {
+        header("Location: posts.php"); 
+        exit();
+   } else {
+        echo "Xatolik yuz berdi. Qaytadan urinib ko‘ring.";
+} 
+    
 };
 
 function loginUser($db, $email, $password){
     session_start();
+    if (!isset($email, $password)) {
+        echo "❌ Email va parol kiritilishi shart!";
+        return;
+    }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
+    try {
         $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,5 +38,7 @@ function loginUser($db, $email, $password){
         } else {
             echo "❌ Login yoki parol noto'g'ri!";
         }
+    }catch (PDOException $e) {
+        echo "❌ Xatolik yuz berdi: " . $e->getMessage();
     }
 }

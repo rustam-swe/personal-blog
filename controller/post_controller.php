@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../db.php';
+
 require  'login_and_registratsiya_controller.php';
 
 function fetchPosts($db) {

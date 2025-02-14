@@ -1,6 +1,15 @@
 <?php
-require '../controller/users_controller.php'; 
-loginUser($db, $email, $password)
+require '../controller/users_controller.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(isset($_POST['email'], $_POST['password'])){
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
+        loginUser($db, $email, $password);
+    }else{
+        echo "Xatolik Email yoki parol notug'ri kiritilgan!";
+    }
+
+}
 ?>
 
 <!DOCTYPE html>

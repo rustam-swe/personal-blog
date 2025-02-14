@@ -1,6 +1,14 @@
 <?php
 require '../controller/users_controller.php'; 
-registerUser($db, $name, $email, $password)
+require '../db.php';
+
+if($_SERVER["REQUEST_METHOD"] == $_POST){
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+    registerUser($db, $name, $email, $password);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
