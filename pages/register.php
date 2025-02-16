@@ -2,6 +2,7 @@
 require '../controller/users_controller.php'; 
 require '../db.php';
 
+
 if($_SERVER["REQUEST_METHOD"] == $_POST){
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);

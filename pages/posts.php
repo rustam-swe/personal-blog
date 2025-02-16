@@ -1,131 +1,109 @@
 <?php
+// if (session_status() === PHP_SESSION_NONE) {
+//     session_start();
+// }
+
 require "../controller/post_controller.php";
-$posts=fetchPosts($db);
+include "../db.php"; 
+
+$logged_in_user = $_SESSION['user_id'] ?? null;
+
+
+$searchPhrase = $_GET['search'] ?? '';
+$status = $_GET['status'] ?? '';
+
+$allposts = ($searchPhrase || $status) ? searchPosts($db, $searchPhrase, $status) : fetchPosts($db);
+
+
+$user_posts = [];
+$other_posts = [];
+
+foreach ($allposts as $post) {
+    if ($logged_in_user && $logged_in_user == $post['user_id']) {
+        $user_posts[] = $post;
+    } else {
+        $other_posts[] = $post;
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Posts</title>
+    <title>Personal Blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            background: white;
-            padding: 20px;
+        .card {
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .post {
+        .card-body {
             padding: 15px;
-            margin-bottom: 15px;
-            background: #fff;
+        }
+        .card-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .bg-white {
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .post:hover {
-            transform: scale(1.02);
-        }
-        .post h2 a {
-            color: #333;
-            text-decoration: none;
-        }
-        .post h2 a:hover {
-            text-decoration: underline;
-        }
-        .post p {
-            color: #666;
-        }
-        .post-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .post-actions a {
-            padding: 7px 15px;
-            border-radius: 5px;
-            color: white;
-            text-decoration: none;
-        }
-        .edit-btn {
-            background: #007bff;
-        }
-        .edit-btn:hover {
-            background: #0056b3;
-        }
-        .delete-btn {
-            background: #dc3545;
-        }
-        .delete-btn:hover {
-            background: #b52b37;
-        }
-        .add-btn {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background: #28a745;
-            color: white;
-            border-radius: 5px;
-            text-align: center;
-            text-decoration: none;
-        }
-        .add-btn:hover {
-            background: #218838;
+            padding: 15px;
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container">
-    <h2><a href="../index.php" class="btn btn-outline-primary">🏠 Home</a></h2>
-    <h1>My Posts</h1>
-    <a href="create_post.php" class="add-btn">➕ Add new post</a>
+<div class="container py-4">
+    <h1 class="text-center mb-4">📌 Personal Blog</h1>
 
-    <?php if (empty($posts)): ?>
-        <p class="text-center text-muted">No posts available.</p>
-    <?php else: ?>
-        <?php foreach ($posts as $post): ?>
-            <div class="post">
-                <h2><a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
-                <p><?= nl2br(htmlspecialchars(substr($post['text'], 0, 100))) ?>...</p>
-                <small class="text-muted">📅 <?= $post['created_at'] ?> | ✍️ Author: <?= htmlspecialchars($post['name']) ?></small>
+    <?php if (!empty($user_posts)): ?>
+        <div class="mb-4 p-3 bg-white shadow rounded">
+            <h3 class="mb-3">📌 My Posts</h3>
+            <form action="" method="get" class="d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="🔍 Search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                <select name="status" class="form-select">
+                    <option value="">All</option>
+                    <option value="published" <?= ($_GET['status'] ?? '') == 'published' ? 'selected' : '' ?>>Published</option>
+                    <option value="drafted" <?= ($_GET['status'] ?? '') == 'drafted' ? 'selected' : '' ?>>Drafted</option>
+                </select>
+                <button type="submit" class="btn btn-primary">🔍 Search</button>
+            </form>
+            <a href="logout.php" class="btn btn-danger mt-3">❌ Log out</a>
+            <a href="create_post.php" class="btn btn-success mt-3">➕ Add new post</a>
+        </div>
 
-                <?php if (!empty($post['updated_at'])): ?>
-                    <br>
-                    <small class="text-muted">📝 Edited: <?= $post['updated_at'] ?></small>
-                <?php endif; ?>
-
-                <div class="post-actions">
-                    <a href="edit_post.php?id=<?= $post['id'] ?>" class="edit-btn">✏️ Edit</a>
-                    <a href="delete_post.php?id=<?= $post['id'] ?>" onclick="return confirm('Do you want to delete?')" class="delete-btn">🗑️ Delete</a>
+        <?php foreach ($user_posts as $post): ?>
+            <div class="card mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><?= htmlspecialchars($post["title"]) ?></h5>
+                    <p class="card-text"><?= nl2br(htmlspecialchars($post["text"])) ?></p>
+                    <small class="text-muted">📅 <?= $post["created_at"] ?></small>
+                    <div class="mt-2">
+                        <a href="edit_post.php?id=<?= $post['id'] ?>" class="btn btn-primary btn-sm">✏️ Edit</a>
+                        <a href="delete_post.php?id=<?= $post['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Haqiqatan ham o‘chirmoqchimisiz?');">🗑 Delete</a>
+                    </div>
                 </div>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 
-    <?php
-        $allpostss = indexPosts($db);
-        foreach ($allpostss as $posts) { 
-            echo "<div class='card mb-3'>";
-            echo "<div class='card-body'>";
-            echo "<h2 class='card-title'>" . htmlspecialchars($posts["title"]) . "</h2>";
-            echo "<p class='card-text'>" . nl2br(htmlspecialchars($posts["text"])) . "</p>";
-            echo "<small class='text-muted'>✍️ Muallif: " . htmlspecialchars($posts["name"]) . " | 📅 Yaratilgan sana: " . $posts["created_at"] . "</small>";
-            echo "</div>";
-            echo "</div>";
-        }
-    ?>
+    <?php if (!empty($other_posts)): ?>
+        <div class="mt-5 mb-4 p-3 bg-white shadow rounded">
+            <h3 class="mb-3">🌍 Others</h3>
+        </div>
+
+        <?php foreach ($other_posts as $post): ?>
+            <div class="card mb-3 border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><?= htmlspecialchars($post["title"]) ?></h5>
+                    <p class="card-text"><?= nl2br(htmlspecialchars($post["text"])) ?></p>
+                    <small class="text-muted">✍️ Muallif: <?= htmlspecialchars($post["name"]) ?> | 📅 <?= $post["created_at"] ?></small>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

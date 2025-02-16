@@ -1,45 +1,32 @@
 <?php
 require "../db.php";
 
-$db->query("DROP TABLE IF EXISTS users");
-$db->query("DROP TABLE IF EXISTS poststatus");
 $db->query("DROP TABLE IF EXISTS posts");
+$db->query("DROP TABLE IF EXISTS users");
 
+try {
+  // Users jadvalini yaratish
+  $db->exec("CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(64) NOT NULL,
+      email VARCHAR(128) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL
+  )");
 
-$usersTable = "CREATE TABLE  IF NOT EXISTS`users` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255),
-  `email` varchar(255) UNIQUE,
-  `password` varchar(255)
-)";
+  // Posts jadvalini yaratish
+  $db->exec("CREATE TABLE IF NOT EXISTS posts (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(64) DEFAULT NULL,
+      text TEXT DEFAULT NULL,
+      user_id INT NOT NULL,
+      status ENUM('published', 'drafted') NOT NULL DEFAULT 'drafted',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )");
 
-$poststTable = "CREATE TABLE IF NOT EXISTS `poststatus`(
-  `id` int  primary key AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL UNIQUE
-)";
+  echo "The Users and Posts tables have been successfully created.!";
+} catch (PDOException $e) {
+  die("Xatolik: " . $e->getMessage());
+}
 
-$postsTable = "CREATE TABLE IF NOT EXISTS `posts` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `title` varchar(255),
-  `text` TEXT,
-  `user_id` int,
-  `status_id` int,
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`status_id`) REFERENCES `poststatus` (`id`) ON DELETE SET NULL
-)";
-
-
-$usersStmt = $db->prepare($usersTable);
-$usersStmt->execute();
-
-$postStatusStmt = $db->prepare($poststTable);
-$postStatusStmt->execute();
-
-$postsStmt = $db->prepare($postsTable);
-$postsStmt->execute();
-
-
-echo "Tables: users, posts, postStatus created successfully\n";
-?>

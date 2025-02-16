@@ -1,6 +1,6 @@
 <?php
 require "../controller/post_controller.php";
-createPosts($db, $title, $text);
+$createPosts($title, $text);
 ?>
 
 <!DOCTYPE html>

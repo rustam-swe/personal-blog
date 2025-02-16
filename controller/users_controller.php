@@ -1,4 +1,5 @@
 <?php
+session_start();
 require __DIR__ . "/../db.php";
 
 function registerUser($db, $name, $email, $password){
@@ -18,27 +19,25 @@ function registerUser($db, $name, $email, $password){
     
 };
 
-function loginUser($db, $email, $password){
-    session_start();
-    if (!isset($email, $password)) {
-        echo "❌ Email va parol kiritilishi shart!";
-        return;
-    }
+$loginUser = function($email, $password) use ($db){    
 
-    try {
-        $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!empty($email) && !empty($password)) {
+        
+        $query = $db->prepare("SELECT * FROM users WHERE email = :email");
+        $query->execute(['email' => $email]);
+        $user = $query->fetch(PDO::FETCH_ASSOC);
 
+       
         if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['email'] = $user['email'];
             $_SESSION['user_id'] = $user['id']; 
-            $_SESSION['user_name'] = $user['name'];
-            header("Location: posts.php");
-             exit;
+
+            header("Location: ../pages/posts.php");
+            exit;
         } else {
-            echo "❌ Login yoki parol noto'g'ri!";
-        }
-    }catch (PDOException $e) {
-        echo "❌ Xatolik yuz berdi: " . $e->getMessage();
+            echo "❌ Email yoki parol noto‘g‘ri!";
+        }          
+    } else {
+        echo "❌ Email va parol kiritilishi shart!";
     }
-}
+};
