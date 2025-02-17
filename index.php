@@ -7,8 +7,9 @@ $logged_in_user = $_SESSION['user_id'] ?? null;
 
 $searchPhrase = $_GET['search'] ?? '';
 $status = $_GET['status'] ?? '';
+$currentPage = $_GET['page'] ?? 1;
 
-$allposts = ($searchPhrase || $status) ? searchPosts($db, $searchPhrase, $status) : fetchPosts($db);
+$allposts = ($searchPhrase || $status) ? searchPosts($db, $searchPhrase, $status) : fetchPosts($db, $currentPage);
 
 $user_posts = [];
 $other_posts = [];
@@ -57,11 +58,11 @@ foreach ($allposts as $post) {
     </div>
 
     <div class="container mt-4">
-        <?php if (empty($allposts)): ?>
+        <?php if (empty($allposts['posts'])): ?>
             <div class="alert alert-warning text-center">⛔ Post topilmadi!</div>
         <?php else: ?>
             <div class="row">
-                <?php foreach ($allposts as $post): ?>
+                <?php foreach ($allposts['posts'] as $post): ?>
                     <div class="col-md-6">
                         <div class="card mb-3 shadow-sm">
                             <div class="card-body">
@@ -75,7 +76,9 @@ foreach ($allposts as $post) {
                     </div>
                 <?php endforeach; ?>
             </div>
-        <?php endif; ?>
+        <?php endif; 
+        paginate($allposts['totalPages'], $currentPage);
+      ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
