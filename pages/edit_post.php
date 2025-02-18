@@ -65,7 +65,15 @@ $post = editPost($db)
         <button type="submit" class="btn-save">Save Changes</button>
     </form>
 </div>
-
+<div class="container text-center mt-4">
+        <p>About the Blog
+This blog is designed to share my personal experiences, 
+thoughts, and creations. I write here about important events in my life, 
+my travels, books, technology, 
+and many other topics. 
+I try to make each post on my blog 
+interesting and useful to read.</p>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

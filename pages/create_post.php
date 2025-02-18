@@ -46,7 +46,20 @@ $createPosts($title, $text, $status);
     </style>
 </head>
 <body>
-
+<header class="bg-light shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+        <!-- Logo or Title -->
+        <a class="navbar-brand text-primary" href="#">
+            <h2 style="font-family: 'Arial', sans-serif;">👋 Personal-Blog</h2>
+        </a>
+        <!-- Navigation links -->
+        <nav>
+            <a href="/" class="text-dark mx-3">Bosh sahifa</a>
+            <a href="/about.html" class="text-dark mx-3">Biz haqimizda</a>
+            <a href="/contact.html" class="text-dark mx-3">Aloqa</a>
+        </nav>
+    </div>
+</header>
 <div class="container">
     <h2><a href="posts.php" class="btn btn-outline-primary">🔙 Back</a></h2>
     <h1>Add New Post</h1>
@@ -67,7 +80,15 @@ $createPosts($title, $text, $status);
 	<br><button type="submit" class="submit-btn">Submit</button>
     </form>
 </div>
-
+<div class="container text-center mt-4">
+        <p>About the Blog
+This blog is designed to share my personal experiences, 
+thoughts, and creations. I write here about important events in my life, 
+my travels, books, technology, 
+and many other topics. 
+I try to make each post on my blog 
+interesting and useful to read.</p>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
