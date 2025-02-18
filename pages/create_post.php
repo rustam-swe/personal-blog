@@ -1,6 +1,6 @@
 <?php
 require "../controller/post_controller.php";
-$createPosts($title, $text);
+$createPosts($title, $text, $status);
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +58,13 @@ $createPosts($title, $text);
         <div class="mb-3">
             <textarea name="text" class="form-control" rows="5" placeholder="Enter post text" required></textarea>
         </div>
-        <button type="submit" class="submit-btn">Submit</button>
+	<div>
+	    <select name="status" class="form-select">
+		<option value="published">Published</option>
+		<option value="drafted">Drafted</option>
+	    </select>
+	</div>
+	<br><button type="submit" class="submit-btn">Submit</button>
     </form>
 </div>
 

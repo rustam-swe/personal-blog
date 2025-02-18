@@ -4,9 +4,8 @@ require __DIR__ . '/../db.php';
 require  'login_and_registratsiya_controller.php';
 
 function fetchPosts($db) {
-    $user_id = $_SESSION['user_id'] ?? null; // Agar foydalanuvchi login qilmagan bo‘lsa, $user_id = null
+    $user_id = $_SESSION['user_id'] ?? null; 
 
-    // Barcha postlarni olish
     $stmt = $db->prepare("SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC");
     $stmt->execute();
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -15,83 +14,59 @@ function fetchPosts($db) {
 }
 
 
-$createPosts = function($title, $text) use ($db){
+$createPosts = function($title, $text, $status) use ($db){
 
-    checkLogin($db);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $title = trim($_POST['title']);
-        $text = trim($_POST['text']);
+	    $text = trim($_POST['text']);
+	    $status = trim($_POST['status']);
         $user_id = $_SESSION['user_id'];
 
-        $stmt = $db->prepare("INSERT INTO posts (title, text, user_id) VALUES (:title, :text, :user_id)");
-        $stmt->execute(['title' => $title, 'text' => $text, 'user_id' => $user_id]);
+        $stmt = $db->prepare("INSERT INTO posts (title, text, status, user_id) VALUES (:title, :text, :status, :user_id)");
+        $stmt->execute(['title' => $title, 'text' => $text, 'status' => $status, 'user_id' => $user_id]);
 
         header("Location: posts.php");
         exit;
     }
-};
+};  
 
 function editPost($db){
-
-    checkLogin($db);
+    // Agar session start qilmagan bo'lsangiz, bu yerga qo'shing
+    session_start();
 
     $id = $_GET['id'] ?? null;
     $user_id = $_SESSION['user_id'];
 
     if (!$id) die("Post not found!");
 
-    //Foydalanuvchiga tegishli postni olish
+    // Foydalanuvchiga tegishli postni olish
     $stmt = $db->prepare("SELECT * FROM posts WHERE id = :id AND user_id = :user_id");
     $stmt->execute(['id' => $id, 'user_id' => $user_id]);
-    $post = $stmt->fetch(PDO::FETCH_ASSOC);
+    $post = $stmt->fetch(PDO::FETCH_ASSOC);  
 
-    // Post mavjudligini tekshirish
     if (!$post) {
         die("Post not found or you do not have permission!");
     }
 
-    
+    // POST so'rovi yuborilganida
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $title = trim($_POST['title']);
         $text = trim($_POST['text']);
 
-        // Faqat agar post haqiqatdan o‘zgargan bo‘lsa, `updated_at` yangilanadi
+        // Agar ma'lumotlar o'zgargan bo'lsa
         if ($post['title'] !== $title || $post['text'] !== $text) {
             $stmt = $db->prepare("UPDATE posts SET title = :title, text = :text, updated_at = NOW() WHERE id = :id AND user_id = :user_id");
-        } else {
-            $loginUser = function($email, $password) use ($db){    
-            
-                if (!empty($email) && !empty($password)) {
-                    
-                    $query = $db->prepare("SELECT * FROM users WHERE email = :email");
-                    $query->execute(['email' => $email]);
-                    $user = $query->fetch(PDO::FETCH_ASSOC);
-            
-                   
-                    if ($user && password_verify($password, $user['password'])) {
-                        $_SESSION['email'] = $user['email'];
-                        $_SESSION['user_id'] = $user['id']; 
-            
-                        header("Location: ../pages/posts.php");
-                        exit;
-                    } else {
-                        echo "❌ Email yoki parol noto‘g‘ri!";
-                    }          
-                } else {
-                    echo "❌ Email va parol kiritilishi shart!";
-                }
-            };
-            $stmt = $db->prepare("UPDATE posts SET title = :title, text = :text WHERE id = :id AND user_id = :user_id");
+            $stmt->execute(['title' => $title, 'text' => $text, 'id' => $id, 'user_id' => $user_id]);
         }
 
-        $stmt->execute(['title' => $title, 'text' => $text, 'id' => $id, 'user_id' => $user_id]);
-
+        // So'nggi qadamda sahifaga qaytish
         header("Location: posts.php");
         exit;
     }
+
     return $post;
-}   
+}
 
 function indexPosts($db){
     $conn = $db;
@@ -122,4 +97,14 @@ function searchPosts(PDO $db, $searchPhrase, $status) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+$totalPosts = function() use ($db) {
+	$stmt = $db->query("SELECT COUNT(id) as total FROM posts");
+	return $stmt->fetchColumn();
+};
+
+$pageCount = function(int $perPage = 2) use ($totalPosts) {
+    return ceil($totalPosts() / $perPage);
+};
+
 ?>

@@ -1,10 +1,10 @@
 <?php
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
 
 require "../controller/post_controller.php";
 include "../db.php"; 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $logged_in_user = $_SESSION['user_id'] ?? null;
 
@@ -70,7 +70,7 @@ foreach ($allposts as $post) {
                 </select>
                 <button type="submit" class="btn btn-primary">🔍 Search</button>
             </form>
-            <a href="logout.php" class="btn btn-danger mt-3">❌ Log out</a>
+            <a href="/" class="btn btn-danger mt-3">❌ Log out</a>
             <a href="create_post.php" class="btn btn-success mt-3">➕ Add new post</a>
         </div>
 
@@ -79,7 +79,13 @@ foreach ($allposts as $post) {
                 <div class="card-body">
                     <h5 class="card-title"><?= htmlspecialchars($post["title"]) ?></h5>
                     <p class="card-text"><?= nl2br(htmlspecialchars($post["text"])) ?></p>
-                    <small class="text-muted">📅 <?= $post["created_at"] ?></small>
+                    <small class="text-muted">
+                            📅 Yaratilgan: <?= $post["created_at"] ?> 
+                        <?php if (!empty($post["updated_at"])): ?> 
+                    |       🔄 Yangilangan: <?= $post["updated_at"] ?>
+                        <?php endif; ?>
+                    </small>
+
                     <div class="mt-2">
                         <a href="edit_post.php?id=<?= $post['id'] ?>" class="btn btn-primary btn-sm">✏️ Edit</a>
                         <a href="delete_post.php?id=<?= $post['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Haqiqatan ham o‘chirmoqchimisiz?');">🗑 Delete</a>
@@ -104,6 +110,7 @@ foreach ($allposts as $post) {
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
