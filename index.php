@@ -7,12 +7,12 @@ $logged_in_user = $_SESSION['user_id'] ?? null;
 
 $searchPhrase = $_GET['search'] ?? '';
 $status = $_GET['status'] ?? '';
+$currentPage = $_GET['page'] ?? 1;
 
-$allposts = ($searchPhrase || $status) ? searchPosts($db, $searchPhrase, $status) : fetchPosts($db);
+$allposts = ($searchPhrase || $status) ? searchPosts($db, $searchPhrase, $status) : fetchPosts($db, $currentPage);
 
 $user_posts = [];
 $other_posts = [];
-  
 
 foreach ($allposts as $post) {
     if ($logged_in_user && $logged_in_user == $post['user_id']) {
@@ -21,7 +21,6 @@ foreach ($allposts as $post) {
         $other_posts[] = $post;
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="uz">
@@ -30,26 +29,8 @@ foreach ($allposts as $post) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        .pagination a {
-          
-            color: #007BFF;
-            padding: 8px 16px;
-            text-decoration: none;
-            border: 1px solid #007BFF;
-            margin: 0 5px;
-            border-radius: 10px;
-        }
-        .pagination.center-bottom {
-            position: fixed;
-            bottom: 20px;
-            left: 90%;
-            transform: translateX(-50%);
-        }
-    </style>
 </head>
 <body>
-    
 <header class="bg-light shadow-sm">
     <div class="container d-flex justify-content-between align-items-center py-3">
         <!-- Logo or Title -->
@@ -65,12 +46,13 @@ foreach ($allposts as $post) {
     </div>
 </header>
 
-<div class="container text-center mt-4">
-    <h1>👋 Personal-Blog!</h1>
-    <p>Akkauntingizga kiring yoki ro‘yxatdan o‘ting:</p>
-    <a href="/pages/login.php" class="btn btn-primary mx-2">🔑 Kirish</a>
-    <a href="/pages/register.php" class="btn btn-success mx-2">📝 Ro‘yxatdan o‘tish</a>
-</div>
+
+    <div class="container text-center mt-4">
+        <h1>👋 Personal Blogga Xush Kelibsiz!</h1>
+        <p>Akkauntingizga kiring yoki ro‘yxatdan o‘ting:</p>
+        <a href="/pages/login.php" class="btn btn-primary">🔑 Kirish</a>
+        <a href="/pages/register.php" class="btn btn-success">📝 Ro‘yxatdan o‘tish</a>
+    </div>
 
     <div class="container mt-4">
         <form action="" method="get" class="row g-2">
@@ -91,11 +73,11 @@ foreach ($allposts as $post) {
     </div>
 
     <div class="container mt-4">
-        <?php if (empty($allposts)): ?>
+        <?php if (empty($allposts['posts'])): ?>
             <div class="alert alert-warning text-center">⛔ Post topilmadi!</div>
         <?php else: ?>
             <div class="row">
-                <?php foreach ($allposts as $post): ?>
+                <?php foreach ($allposts['posts'] as $post): ?>
                     <div class="col-md-6">
                         <div class="card mb-3 shadow-sm">
                             <div class="card-body">
@@ -109,9 +91,10 @@ foreach ($allposts as $post) {
                     </div>
                 <?php endforeach; ?>
             </div>
-        <?php endif; ?>
+        <?php endif; 
+        paginate($allposts['totalPages'], $currentPage);
+      ?>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <div class="container text-center mt-4">
         <p>About the Blog
 This blog is designed to share my personal experiences, 
@@ -121,6 +104,6 @@ and many other topics.
 I try to make each post on my blog 
 interesting and useful to read.</p>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

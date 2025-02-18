@@ -1,16 +1,25 @@
 <?php
-session_start(); 
+//session_start(); 
 require __DIR__ . '/../db.php';
 require  'login_and_registratsiya_controller.php';
 
-function fetchPosts($db) {
+function fetchPosts($db, $currentPage) {
     $user_id = $_SESSION['user_id'] ?? null; 
 
-    $stmt = $db->prepare("SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC");
+    $postsPerPage = 2;
+    $offset = ($currentPage -1) * $postsPerPage;
+
+    $postsCount = $db->query("SELECT COUNT(*) AS posts_count FROM posts")->fetch()['posts_count'];
+    $totalPages = ceil($postsCount / $postsPerPage);
+
+    $stmt = $db->prepare("SELECT posts.*, users.name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC LIMIT $postsPerPage OFFSET $offset");
     $stmt->execute();
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    return $posts;
+    return [
+        'posts' => $posts,
+        'totalPages' => $totalPages
+    ];
 }
 
 
@@ -107,4 +116,14 @@ $pageCount = function(int $perPage = 2) use ($totalPosts) {
     return ceil($totalPosts() / $perPage);
 };
 
-?>
+
+
+function paginate($totalPages, $currentPage) {
+  for($page = 1; $totalPages >= $page; $page++){
+    if($currentPage == $page) {
+      echo "<span style='margin-right:10px; color:red'> $page </span>";
+    } else{
+      echo "<a href='?page=$page' style='margin-right:10px''> $page </a>";
+    }
+  }
+}
